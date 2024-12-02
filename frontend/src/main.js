@@ -1,13 +1,14 @@
 /**
  * main.js
  *
- * Bootstraps Vuetify and other plugins then mounts the App`
+ * Bootstraps Vuetify and other plugins then mounts the App
  */
 
 // Plugins
 // Import dependencies
 import { createApp } from "vue";
 import axios from "axios";
+import { createPinia } from "pinia"; // Import Pinia
 import { registerPlugins } from "@/plugins"; // Assuming you have a custom function to register plugins
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
@@ -20,6 +21,10 @@ axios.defaults.baseURL = "http://127.0.0.1:8000"; // Ensure your backend API is 
 
 // Create the Vue app instance
 const app = createApp(App);
+
+// Create and register Pinia store
+const pinia = createPinia();
+app.use(pinia); // Register Pinia with the app
 
 // Register the Toast plugin
 app.use(Toast); // Register the Toast plugin before other plugins

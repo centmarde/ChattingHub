@@ -8,7 +8,7 @@
 import { createRouter, createWebHistory } from "vue-router/auto";
 import { setupLayouts } from "virtual:generated-layouts";
 import { routes as autoRoutes } from "vue-router/auto-routes";
-import { useAuthStore } from "@/stores/login"; // Import your store for authentication
+import { useAuthStore } from "@/stores/auth"; // Import your store for authentication
 
 import Hero from "../pages/index.vue";
 import Dashboard from "@/pages/Dashboard.vue";

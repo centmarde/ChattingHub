@@ -60,7 +60,7 @@
 <script>
 import axios from "axios";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/login"; // If you're using Pinia for store management
+import { useAuthStore } from "@/stores/auth"; // If you're using Pinia for store management
 
 export default {
     name: "Users",
