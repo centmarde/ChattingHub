@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col cols="12" md="12" lg="12">
-                <h3 class="text-center">USERS DATA/ DASHBOARD</h3>
+                <h2 class="text-center my-4">USERS DATA / DASHBOARD</h2>
                 <!-- Display loading spinner when the data is being fetched -->
                 <v-spinner v-if="loading" color="primary" class="d-flex justify-center" />
 
@@ -50,7 +50,7 @@
         <v-row>
             <v-col>
                 <v-btn @click="logout" color="red" class="mt-4">Logout</v-btn>
-                <v-btn @click="ChatPage" color="green" class="mt-4 mx-2">Chat Page</v-btn>
+                <router-link to="/chat"> <v-btn @click="ChatPage" color="green" class="mt-4 mx-2">Chat Page</v-btn></router-link>
             </v-col>
             
         </v-row>

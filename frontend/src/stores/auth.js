@@ -19,22 +19,41 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    // Login action: attempts to authenticate and set the access token
     async login(email, password) {
       try {
+        // First, authenticate the user with the login credentials
         const response = await axios.post("/api/login/", {
           email: email,
           password: password,
         });
+
         this.accessToken = response.data.access; // Set token in store
         console.log("Access Token:", this.accessToken);
+
         // Save the token to localStorage for persistence
         localStorage.setItem("accessToken", this.accessToken);
+
+        // Fetch the user details from /api/me/ using the access token
+        const userResponse = await axios.get("http://localhost:8000/api/me/", {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        });
+
+        // Assuming the user response contains the user data with an 'id' field
+        const userId = userResponse.data.id;
+        this.user = userResponse.data; // Save the user data to the store
+        localStorage.setItem("userId", userId); // Save the user ID to localStorage
+
+        // Log the user ID for debugging
+        console.log("User ID:", userId);
+
         return true; // Successful login
       } catch (error) {
         console.error("Login failed:", error);
         this.accessToken = null;
         localStorage.removeItem("accessToken"); // Remove invalid token
+        localStorage.removeItem("userId"); // Remove user ID from localStorage in case of failure
         return false; // Failed login
       }
     },
@@ -78,11 +97,13 @@ export const useAuthStore = defineStore("auth", {
 
     // Logout action: clears both the store and localStorage
     logout() {
-      this.accessToken = null; // Reset token in store
-      this.user = null; // Reset user data
-      this.error = null; // Clear any existing errors
-      localStorage.removeItem("accessToken"); // Remove the token from localStorage
-      router.push("/"); // Redirect to home page or login page
+      this.accessToken = null;
+      this.user = null;
+      this.error = null;
+      localStorage.removeItem("accessToken");
+      /*  localStorage.removeItem("Role");  */
+      localStorage.removeItem("hasVisitedDashboard");
+      window.location.href = "/";
     },
 
     clearError() {
