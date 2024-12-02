@@ -25,26 +25,26 @@
 </template>
 
 <script>
-import { useAuthStore } from "@/stores/login";
+import { useAuthStore } from "@/stores/auth"; // Importing the merged auth store
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
 export default {
   setup() {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore();  // Access the auth store
     const router = useRouter();
-    const email = ref("");
-    const password = ref("");
+    const email = ref("");  // Bind email input
+    const password = ref("");  // Bind password input
     const toast = useToast();
 
     const handleLogin = async () => {
-      const success = await authStore.login(email.value, password.value);
+      const success = await authStore.login(email.value, password.value);  // Use the store's login action
       if (!success) {
-        toast.error("Login failed");
+        toast.error("Login failed");  // Display error toast if login fails
       } else {
-        toast.success("Login successful");
-        // Redirect to /dashboard or another route
+        toast.success("Login successful");  // Display success toast if login succeeds
+        // Redirect to the previously requested page, or to /dashboard if none is specified
         const redirect = router.currentRoute.value.query.redirect || "/dashboard";
         router.push(redirect);
       }
