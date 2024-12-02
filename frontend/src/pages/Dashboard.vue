@@ -97,7 +97,6 @@ export default {
         logout() {
             const authStore = useAuthStore();
             authStore.logout(); // Clear the auth token in Pinia store
-            this.$router.push("/"); // Redirect to the login or home page
         }
     }
 };

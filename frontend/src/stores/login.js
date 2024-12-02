@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import router from "@/router/index";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -31,6 +32,7 @@ export const useAuthStore = defineStore("auth", {
     logout() {
       this.accessToken = null; // Reset token in store
       localStorage.removeItem("accessToken");
+      router.push("/");
     },
 
     // Load token from localStorage (on app initialization)
