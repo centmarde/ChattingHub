@@ -1,76 +1,107 @@
 <template>
   <v-container>
     <v-row>
-      <!-- Sender and Receiver Selection using v-cards -->
+      <!-- Inbox (left sidebar) -->
       <v-col cols="12" md="4">
-        <v-card
-          v-for="user in filteredUsers"
-          :key="user.id"
-          class="mb-3"
-          @click="selectReceiver(user)"
-          :class="{'selected-card': selectedReceiver && selectedReceiver.id === user.id}"
-          outlined
-        >
+        <v-card class="mb-3" elevation="2">
           <v-card-title>
-            <v-avatar class="mr-3">
-              <v-img :src="user.avatar" />
-            </v-avatar>
-            <div>
-              <div class="headline">{{ user.name }}</div>
-              <div class="caption">Click to select this user</div>
-            </div>
+            <div class="headline">Inbox</div>
           </v-card-title>
+          <v-list>
+            <v-list-item-group v-if="filteredUsers.length > 0">
+              <v-list-item v-for="user in filteredUsers" :key="user.id" @click="selectReceiver(user)">
+                <v-list-item-avatar>
+                  <v-img :src="user.avatar" />
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ user.name }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+            <v-list-item v-else>
+              <v-list-item-content>
+                <v-list-item-title>No conversations available...</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-card>
       </v-col>
 
-      <!-- Chat Box Display and Input -->
+      <!-- Chat Box (right section) -->
       <v-col cols="12" md="8">
-        <v-card class="pa-3" elevation="2">
-          <router-link class="d-flex justify-end" style="text-decoration: none;" to="/dashboard">
-            <v-btn color="primary">Back</v-btn>
-          </router-link>
+        <v-card v-if="selectedReceiver" class="pa-3" elevation="2">
           <v-card-title>
             <v-avatar class="mr-3">
-              <v-img :src="user.avatar" />
+              <v-img :src="selectedReceiver.avatar" />
             </v-avatar>
             <div>
-              <div class="headline">{{ user.name || 'Loading...' }}</div>
-              <div class="caption">You are chatting with:</div>
-              <div class="caption">
-                {{ selectedReceiver ? selectedReceiver.name : 'Select a receiver' }}
-              </div>
+              <div class="headline">{{ selectedReceiver.name }}</div>
+              <div class="caption">Chat with {{ selectedReceiver.name }}</div>
             </div>
+            <router-link class="d-flex justify-end" to="/dashboard" style="text-decoration: none;">
+              <v-btn color="primary">Back</v-btn>
+            </router-link>
           </v-card-title>
+
           <v-card-subtitle>
-            <v-list>
-              <v-list-item-group v-if="messages.length > 0">
-                <v-list-item v-for="message in messages" :key="message.id">
+            <v-scroll-y class="message-list">
+              <v-list>
+                <v-list-item-group v-if="messages && messages.length > 0">
+                  <v-list-item v-for="message in messages" :key="message.id">
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <span>{{ message.content }}</span>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+                <v-list-item v-else>
                   <v-list-item-content>
-                    <v-list-item-title>
-                      <strong>{{ message.sender_name }}:</strong>
-                      <span>{{ message.content }}</span> <!-- No need to decrypt here -->
-                    </v-list-item-title>
+                    <v-list-item-title>No messages yet...</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-              </v-list-item-group>
-              <v-list-item v-else>
+              </v-list>
+            </v-scroll-y>
+          </v-card-subtitle>
+
+          <!-- Message Input -->
+          <v-card-actions>
+            <v-textarea v-model="newMessage" label="Type your message" rows="2" outlined dense />
+            <v-btn @click="sendMessage" :disabled="!newMessage" color="primary">Send</v-btn>
+          </v-card-actions>
+        </v-card>
+
+        <!-- Reply messages -->
+        <v-card v-if="replies && replies.length > 0" class="pa-3 mt-3" elevation="2">
+          <v-card-title>
+            <div class="headline">Replies</div>
+          </v-card-title>
+          <v-scroll-y class="reply-list">
+            <v-list>
+              <v-list-item v-for="reply in replies" :key="reply.id">
                 <v-list-item-content>
-                  <v-list-item-title>No messages yet...</v-list-item-title>
+                  <v-list-item-title>
+                    <span>{{ reply.content }}</span>
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
-          </v-card-subtitle>
+          </v-scroll-y>
+        </v-card>
 
-          <v-card-actions>
-            <v-textarea
-              v-model="newMessage"
-              label="Type your message"
-              rows="2"
-              outlined
-              dense
-            />
-            <v-btn @click="sendMessage" :disabled="!newMessage" color="primary">Send</v-btn>
-          </v-card-actions>
+        <v-card v-else class="pa-3 mt-3" elevation="2">
+          <v-card-title>
+            <div class="headline">No replies yet</div>
+          </v-card-title>
+        </v-card>
+
+        <v-card v-else class="pa-3" elevation="2">
+          <v-card-title>
+            <div class="headline">Select a conversation</div>
+          </v-card-title>
+          <v-card-subtitle>
+            <div class="caption">Click on a user from the Inbox to start a chat.</div>
+          </v-card-subtitle>
         </v-card>
       </v-col>
     </v-row>
@@ -86,21 +117,22 @@ export default {
       user: {
         id: null,
         name: '',
-        avatar: '', // Assuming you want to show user avatars
+        avatar: '',
       },
-      users: [],  // Initialize as an empty array
+      users: [],
       selectedReceiver: null,
       newMessage: '',
-      messages: [], // Store the fetched messages
+      messages: [], // Default value is an empty array to avoid undefined errors
+      replies: [], // Default value is an empty array to avoid undefined errors
     };
   },
   created() {
     this.fetchUserData();
     this.fetchUsers();
+    this.startMessagePolling(); // Start polling for new replies
   },
   computed: {
     filteredUsers() {
-      // Return a filtered list of users that excludes the logged-in user
       return this.users.filter(user => user.id !== this.user.id);
     }
   },
@@ -112,9 +144,8 @@ export default {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-        this.user = userResponse.data; // Assuming the response has user data
-        console.log('User data:', this.user);
-        this.fetchMessages(); // Fetch messages after loading user data
+        this.user = userResponse.data;
+        this.fetchMessages();
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -126,59 +157,74 @@ export default {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-
-        console.log('API response:', response.data);
-
-        // Check if response is successful and contains users data
         if (response.data.status === 'success' && Array.isArray(response.data.data.users)) {
-          this.users = response.data.data.users; // Assuming users array is under 'data.users'
-          console.log('Fetched users:', this.users);
-        } else {
-          console.error('API response does not contain valid users array:', response.data);
-          this.users = [];
+          this.users = response.data.data.users;
         }
       } catch (error) {
         console.error('Error fetching users:', error);
-        this.users = [];
       }
     },
     selectReceiver(user) {
-      this.selectedReceiver = user; // Set the selected receiver to the clicked user
-      this.fetchMessages(); // Fetch messages for the selected receiver
+      this.selectedReceiver = user;
+      this.fetchMessages();
+      this.replies = []; // Clear previous replies when switching users
     },
     async fetchMessages() {
-  if (!this.selectedReceiver) return;
+      if (!this.selectedReceiver) return;
+      try {
+        const receiverId = this.selectedReceiver.id;
 
-  try {
-    const response = await axios.get('http://localhost:8000/chat/api/messages/', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-      params: {
-        sender: this.user.id,
-        receiver: this.selectedReceiver.id,
-      },
-    });
+        const response = await axios.get('http://127.0.0.1:8000/chat/api/messages-by-receiver/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          params: {
+            receiver_id: receiverId,
+          },
+        });
 
-    // Assuming the backend sends decrypted messages
-    this.messages = response.data;
+        this.messages = response.data;
+        this.fetchReplies(); // Fetch replies from the selected receiver
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    },
+    async fetchReplies() {
+      if (!this.selectedReceiver) return;
+      try {
+        const receiverId = this.selectedReceiver.id;
 
-    // Log the decrypted messages
-    console.log('Decrypted messages from backend:', this.messages);
+        const response = await axios.get('http://127.0.0.1:8000/chat/api/messages-by-sender/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          params: {
+            sender_id: receiverId, // Get replies from the selected user
+          },
+        });
 
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-  }
-}
-,
+        this.replies = response.data; // Store the replies
+      } catch (error) {
+        console.error('Error fetching replies:', error);
+      }
+    },
+    startMessagePolling() {
+      // Polling to fetch new messages every 5 seconds
+      setInterval(() => {
+        if (this.selectedReceiver) {
+          this.fetchMessages();
+          this.fetchReplies();
+        }
+      }, 5000);
+    },
     async sendMessage() {
       if (!this.selectedReceiver || !this.newMessage) return;
 
       const messageData = {
         sender: this.user.id,
         receiver: this.selectedReceiver.id,
-        content: this.newMessage, // Send the message as plain text
-        timestamp: new Date().toISOString(), // Ensure timestamp format matches the API
+        content: this.newMessage,
+        timestamp: new Date().toISOString(),
       };
 
       try {
@@ -189,25 +235,20 @@ export default {
           },
         });
 
-        // Push the sent message to the messages array if the API call succeeds
         this.messages.push({
-          id: response.data.id, // Use the ID returned from the API
-          sender_name: this.user.name, // Assume the logged-in user's name is the sender
-          content: this.newMessage, // Store the raw text message
+          id: response.data.id,
+          sender_name: this.user.name,
+          content: this.newMessage,
         });
 
-        // Clear the input after sending the message
         this.newMessage = '';
       } catch (error) {
         console.error('Error sending message:', error);
-        // Handle error (e.g., show a notification or alert)
       }
     }
   }
 };
 </script>
-
-
 <style scoped>
 .headline {
   font-size: 1.5em;
@@ -220,10 +261,31 @@ export default {
   color: grey;
 }
 
-/* Highlight selected receiver card */
 .selected-card {
-  background-color: #f0f0f0; /* Light grey background for selected card */
-  border: 1px solid #1976d2; /* Blue border to indicate selection */
+  background-color: #f0f0f0;
+  border: 1px solid #1976d2;
   color: #151515;
+}
+
+.v-list-item {
+  cursor: pointer;
+}
+
+.v-card-actions {
+  display: flex;
+  align-items: center;
+}
+
+.v-textarea {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.v-btn {
+  align-self: flex-start;
+}
+.message-list, .reply-list {
+  max-height: 100px; /* Adjust height as needed */
+  overflow-y: auto;
 }
 </style>
