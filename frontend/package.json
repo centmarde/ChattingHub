@@ -12,6 +12,7 @@
   "dependencies": {
     "@mdi/font": "7.4.47",
     "axios": "^1.7.8",
+    "crypto-js": "^4.2.0",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
     "vue-toastification": "^2.0.0-rc.5",

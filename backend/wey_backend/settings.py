@@ -20,7 +20,7 @@ ALLOWED_HOSTS = []
 
 # Encryption Key for Fernet
 ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
-
+print(f"ENCRYPTION_KEY: {ENCRYPTION_KEY}")
 if not ENCRYPTION_KEY:
     raise ValueError("Encryption key is not set. Please set the ENCRYPTION_KEY environment variable.")
 
