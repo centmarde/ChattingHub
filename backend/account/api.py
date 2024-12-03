@@ -2,12 +2,10 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.authtoken.models import Token
-
 from .forms import SignupForm
 from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from .models import User
 
 @api_view(['GET'])
@@ -32,16 +30,15 @@ def get_all_users(request):
 def me(request):
     if request.user.is_authenticated:
         return JsonResponse({
-            'id': request.user.id,
+            'id': request.user.id,  # Now an integer (BigAutoField)
             'name': request.user.name,
             'email': request.user.email,
         })
     return JsonResponse({'error': 'User not authenticated'}, status=401)
 
-
 @api_view(['POST'])
-@authentication_classes([])
-@permission_classes([])
+@authentication_classes([])  # No authentication for signup
+@permission_classes([])  # No specific permission for signup
 def signup(request):
     data = request.data
     message = 'success'
@@ -61,10 +58,9 @@ def signup(request):
 
     return JsonResponse({'message': message})
 
-
 @api_view(['POST'])
-@authentication_classes([])
-@permission_classes([])
+@authentication_classes([])  # No authentication for login
+@permission_classes([])  # No specific permission for login
 def login(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -77,7 +73,7 @@ def login(request):
             'message': 'success',
             'token': token.key,
             'user': {
-                'id': user.id,
+                'id': user.id,  # Now an integer (BigAutoField)
                 'name': user.get_full_name(),
                 'email': user.email,
             }

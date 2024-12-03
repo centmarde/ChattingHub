@@ -5,41 +5,43 @@ import json
 
 class MessageEncryptionMiddleware(MiddlewareMixin):
     def __init__(self, get_response):
-        self.key = settings.ENCRYPTION_KEY  # Use the key stored in settings
+        # Initialize the cipher with the encryption key from settings
+        self.key = settings.ENCRYPTION_KEY
         self.cipher = Fernet(self.key)
         super().__init__(get_response)
 
     def process_request(self, request):
+        # Check if the request content type is JSON
         if request.content_type == 'application/json':
             try:
-                # Decode the incoming request body
+                # Decode the incoming request body into JSON
                 request_data = json.loads(request.body.decode('utf-8'))
-
+                
                 if 'message' in request_data:
                     encrypted_content = request_data['message']
-                    print(f"Encrypted message in request: {encrypted_content}")  # For debugging
+                    print(f"Encrypted message in request: {encrypted_content}")  # Debugging
                     
-                    # Decrypt the message
+                    # Decrypt the message content
                     decrypted_content = self.cipher.decrypt(encrypted_content.encode()).decode('utf-8')
-                    print(f"Decrypted message: {decrypted_content}")  # For debugging
+                    print(f"Decrypted message: {decrypted_content}")  # Debugging
                     
-                    # Add decrypted content to request data
+                    # Replace the encrypted message with the decrypted content
                     request.data = request_data
                     request.data['message'] = decrypted_content
             except Exception as e:
-                print(f"Error processing request: {e}")
+                print(f"Error processing request: {e}")  # Error handling for decryption failure
 
     def process_response(self, request, response):
-        # Check if response is JSON and has 'message'
+        # Check if the response has the 'message' field and is JSON
         if hasattr(response, 'data') and isinstance(response.data, dict) and 'message' in response.data:
             message_content = response.data['message']
-            print(f"Original message before encryption: {message_content}")  # For debugging
+            print(f"Original message before encryption: {message_content}")  # Debugging
             
-            # Encrypt the message
+            # Encrypt the message content before returning it
             encrypted_content = self.cipher.encrypt(message_content.encode('utf-8')).decode('utf-8')
-            print(f"Encrypted message in response: {encrypted_content}")  # For debugging
+            print(f"Encrypted message in response: {encrypted_content}")  # Debugging
             
-            # Set encrypted content in response
+            # Set the encrypted message back in the response
             response.data['message'] = encrypted_content
         
         return response
