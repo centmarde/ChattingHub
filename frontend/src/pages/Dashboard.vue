@@ -30,13 +30,7 @@
 
       <v-main class="custom-main">
         <header>
-          <v-card
-            height="65px"
-            rounded="0"
-            flat
-            color="transparent"
-            elevation="0"
-          >
+          <v-card height="65px" rounded="0" flat elevation="0">
             <v-toolbar color="#0e253f">
               <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
@@ -58,10 +52,10 @@
           </v-card>
         </header>
 
-        <v-container fluid class="main-container pa-8 rounded-xl">
+        <v-container fluid class="main-container pa-8 rounded-lg">
           <v-row>
             <VCol cols="12">
-              <UserTable />
+              <UserTable :userData="users" />
             </VCol>
           </v-row>
         </v-container>
@@ -71,8 +65,40 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+import axios from "axios";
 import chatAvatar from "@/assets/images/icon/chat.png";
 import UserTable from "@/views/dashboard/UserTable.vue";
+import defaultAvatar from "@/assets/images/avatars/avatar-1.png"; // Import default avatar
+
+const users = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get("http://127.0.0.1:8000/api/users/", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    console.log("API response:", response.data); // Log the entire response for debugging
+    users.value = response.data.data.users.map((user) => ({
+      username: user.name,
+      email: user.email,
+      status: "active", // Set default status to "active"
+      avatar: defaultAvatar, // Set default avatar
+    }));
+    console.log("Processed users data:", users.value); // Log the processed users data
+  } catch (err) {
+    error.value = err.message || "Something went wrong!";
+    console.error("Error fetching users:", error.value); // Log the error
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(fetchUsers);
 </script>
 
 <style scoped>
