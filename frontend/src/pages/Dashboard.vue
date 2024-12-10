@@ -17,6 +17,8 @@
             title="Dashboard"
             value="dashboard"
             class="mb-3"
+            :class="{ 'active-tab': activeTab === 'dashboard' }"
+            @click="activeTab = 'dashboard'"
           ></v-list-item>
 
           <!-- Chats -->
@@ -24,13 +26,15 @@
             prepend-icon="mdi-chat"
             title="Chats"
             value="chats"
+            :class="{ 'active-tab': activeTab === 'chats' }"
+            @click="activeTab = 'chats'"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
 
       <v-main class="custom-main">
         <header>
-          <v-card height="65px" rounded="0" flat elevation="0">
+          <v-card height="64px" rounded="0" elevation="0">
             <v-toolbar color="#0e253f">
               <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
@@ -53,9 +57,15 @@
         </header>
 
         <v-container fluid class="main-container pa-8 rounded-lg">
-          <v-row>
+          <v-row v-if="activeTab === 'dashboard'">
             <VCol cols="12">
               <UserTable :userData="users" />
+            </VCol>
+          </v-row>
+          <v-row v-else-if="activeTab === 'chats'">
+            <VCol cols="12">
+              <!-- Chats content goes here -->
+              <p>Chats content</p>
             </VCol>
           </v-row>
         </v-container>
@@ -65,7 +75,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 import chatAvatar from "@/assets/images/icon/chat.png";
 import UserTable from "@/views/dashboard/UserTable.vue";
@@ -74,6 +84,7 @@ import defaultAvatar from "@/assets/images/avatars/avatar-1.png"; // Import defa
 const users = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const activeTab = ref(localStorage.getItem("activeTab") || "dashboard"); // Retrieve activeTab from local storage
 
 const fetchUsers = async () => {
   try {
@@ -99,6 +110,11 @@ const fetchUsers = async () => {
 };
 
 onMounted(fetchUsers);
+
+// Watch for changes in activeTab and save it to local storage
+watch(activeTab, (newTab) => {
+  localStorage.setItem("activeTab", newTab);
+});
 </script>
 
 <style scoped>
@@ -109,6 +125,11 @@ onMounted(fetchUsers);
 
 .main-container {
   background-color: #000f20;
+}
+
+.active-tab {
+  background-color: #1e3a5f !important;
+  color: #ffffff !important;
 }
 
 /* Deep CSS to remove left border of v-navigation-drawer */
