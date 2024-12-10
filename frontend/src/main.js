@@ -5,6 +5,8 @@ import { createPinia } from "pinia";
 import { registerPlugins } from "@/plugins";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import "remixicon/fonts/remixicon.css";
+import "@mdi/font/css/materialdesignicons.css";
 import App from "./App.vue";
 
 // Disable specific Vue warnings
