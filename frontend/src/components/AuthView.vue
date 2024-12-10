@@ -1,51 +1,70 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" lg="8">
+  <div class="bg">
+    <BackgroundSvg />
+  </div>
 
-      </v-col>
-      <v-col cols="12"  lg="4">
-        <br> <br> <br> <br>
-        <login-form>
-      <template #header>
-       
-        <h2 class="text-center mt-5">Welcome Back</h2>
-      </template>
-      <template #footer>
-        <v-btn text @click="switchToRegister">Don't have an account? Register</v-btn>
-      </template>
-    </login-form>
+  <div class="login-container">
+    <v-row justify="center" align="center">
+      <v-col cols="10" lg="4" md="6" sm="6">
+        <login-form class="px-10">
+          <template #footer>
+            <v-card-text class="text-center mt-3 mb-5">
+              <span class="text-center font-weight-light">
+                Don't have an account?
+              </span>
+              <span
+                class="text-blue-lighten-2 text-decoration-none cursor-pointer"
+                @click="switchToRegister"
+              >
+                Register
+              </span>
+            </v-card-text>
+          </template>
+        </login-form>
       </v-col>
     </v-row>
-   
-    
-    <v-dialog v-model="showRegister" persistent max-width="400px">
-      <register-form v-model="showRegister">
-        <template #header>
-          <h2 class="text-center">Create an Account</h2>
-        </template>
-        <template #footer>
-          <!-- Optional footer content for the register form -->
-        </template>
-      </register-form>
-    </v-dialog>
-  </v-container>
+  </div>
+
+  <v-dialog v-model="showRegister" persistent>
+    <v-row justify="center" align="center">
+      <v-col cols="10" lg="4" md="6" sm="6">
+        <register-form v-model="showRegister" class="px-10">
+          <template #footer>
+            <!-- Optional footer content for the register form -->
+          </template>
+        </register-form>
+      </v-col>
+    </v-row>
+  </v-dialog>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import LoginForm from "@/layouts/LoginForm.vue";
 import RegisterForm from "@/layouts/RegisterForm.vue";
+import BackgroundSvg from "@/components/svg/BackgroundSvg.vue";
 
-export default {
-  components: { LoginForm, RegisterForm },
-  setup() {
-    const showRegister = ref(false);
+const showRegister = ref(false);
 
-    const switchToLogin = () => (showRegister.value = false);
-    const switchToRegister = () => (showRegister.value = true);
-
-    return { showRegister, switchToLogin, switchToRegister };
-  },
-};
+const switchToRegister = () => (showRegister.value = true);
 </script>
+
+<style scoped>
+.bg {
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+</style>
