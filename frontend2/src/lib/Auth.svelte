@@ -1,9 +1,58 @@
 <script>
+   import Button, { Label, Icon } from '@smui/button';
+  import axios from "axios";
+  import { accessToken, userId } from "../stores/authStore";
+  
   let email = "";
   let password = "";
 
-  const handleLoginSubmit = () => {
-    alert(`Email: ${email}, Password: ${password}`);
+  const handleLoginSubmit = async () => {
+    try {
+      // Authenticate the user with the login credentials
+      const response = await axios.post("/api/login/", {
+        email: email,
+        password: password,
+      });
+
+      const token = response.data.access; // Get the access token
+      console.log("Access Token:", token);
+
+      // Update the store with the new token
+      accessToken.set(token);
+
+      // Save the token to localStorage for persistence
+      localStorage.setItem("accessToken", token);
+
+      // Fetch the user details from /api/me/ using the access token
+      const userResponse = await axios.get("http://localhost:8000/api/me/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const id = userResponse.data.id; // Assuming the response contains an 'id' field
+      console.log("User ID:", id);
+
+      // Update the store with the new user ID
+      userId.set(id);
+
+      // Save user data to localStorage
+      localStorage.setItem("userId", id);
+
+      return true; // Successful login
+    } catch (error) {
+      console.error("Login failed:", error);
+      
+      // Reset the store values in case of failure
+      accessToken.set(null);
+      userId.set(null);
+
+      // Remove invalid token and user ID from localStorage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userId");
+
+      return false; // Failed login
+    }
   };
 
   const handleRegisterSubmit = () => {
@@ -21,9 +70,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 </style>
-
 <br> <br> <br>
 <div class="form-container">
+ 
   <h2 class="text-center">Login</h2>
   <form on:submit|preventDefault={handleLoginSubmit}>
     <div class="mb-3">
@@ -48,7 +97,12 @@
         placeholder="Enter your password"
       />
     </div>
-    <button type="submit" class="btn btn-primary w-100">Login</button>
+    <div class="d-flex justify-content-center"><Button class="w-50" type="submit" variant="raised">
+      <Icon class="material-icons">favorite</Icon>
+      <Label>Login</Label>
+    </Button></div>
+    
+   
   </form>
   <div class="text-center mt-3">
     <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
@@ -85,7 +139,10 @@
               placeholder="Enter your password"
             />
           </div>
-          <button type="submit" class="btn btn-primary w-100">Register</button>
+          <div class="d-flex justify-content-center"><Button class="w-50" type="submit" variant="raised">
+            <Icon class="material-icons">favorite</Icon>
+            <Label>Login</Label>
+          </Button></div>
         </form>
       </div>
     </div>
