@@ -53,7 +53,7 @@ const switchToRegister = () => (showRegister.value = true);
 .bg {
   position: absolute;
   height: 100vh;
-  width: 100%;
+  width: auto;
   overflow: hidden;
 }
 
