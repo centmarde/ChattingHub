@@ -274,7 +274,7 @@
           {:else}
             <div class="card">
               <div class="card-body intro-text">
-                <p>Select a user to start the conversation!</p>
+                <p>Select a user to have their private messages delivered to you!</p>
               </div>
             </div>
           {/if}
