@@ -1,6 +1,6 @@
 <template>
   <v-card class="bg-card" elevation="24">
-    <h1 class="text-center py-8">Welcome back!</h1>
+    <h1 class="text-center py-8">Chat Whisperer</h1>
 
     <v-form ref="form" @submit.prevent="handleLogin">
       <v-text-field

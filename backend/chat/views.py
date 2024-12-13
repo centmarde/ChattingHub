@@ -26,7 +26,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         encrypted_content = self.cipher.encrypt(message_content.encode()).decode()
 
         # Save the encrypted message to the database
-        serializer.save(sender=sender, receiver=receiver, content=message_content)
+        serializer.save(sender=sender, receiver=receiver, content=encrypted_content)
 
     @action(detail=False, methods=['get'], url_path='messages')
     def get_messages_by_sender_receiver(self, request):
@@ -58,6 +58,35 @@ class MessageViewSet(viewsets.ModelViewSet):
             decrypted_messages.append(decrypted_message)
 
         return Response(decrypted_messages)
+
+    @action(detail=False, methods=['get'], url_path='conversation-messages')
+    def get_conversation_messages(self, request):
+        sender_id = request.query_params.get('sender_id')
+        receiver_id = request.query_params.get('receiver_id')
+
+        if not sender_id or not receiver_id:
+            return Response({'detail': 'Both sender_id and receiver_id parameters are required'}, status=400)
+
+        try:
+            sender_id = int(sender_id)  # Ensure the sender_id is valid (integer)
+            receiver_id = int(receiver_id)  # Ensure the receiver_id is valid (integer)
+        except ValueError:
+            return Response({'detail': 'Invalid sender_id or receiver_id format'}, status=400)
+
+        # Retrieve messages for the given sender and receiver IDs
+        messages = Message.objects.filter(sender__id=sender_id, receiver__id=receiver_id)
+
+        # Directly return the message content without decryption
+        message_data = []
+        for message in messages:
+            message_data.append({
+                'sender': message.sender.username,
+                'receiver': message.receiver.username,
+                'content': message.content,  # No decryption, just raw content
+                'timestamp': message.timestamp,
+            })
+
+        return Response(message_data)
 
     @action(detail=False, methods=['get'], url_path='messages-by-sender')
     def get_messages_by_sender(self, request):

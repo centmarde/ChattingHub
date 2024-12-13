@@ -5,7 +5,7 @@
       <v-col cols="12" md="4">
         <v-card class="mb-3" elevation="2">
           <v-card-title>
-            <div class="headline">Inbox</div>
+            <div class="headline">Availabe Users</div>
           </v-card-title>
           <v-list>
             <v-list-item-group v-if="filteredUsers.length > 0">
@@ -38,9 +38,9 @@
               <div class="headline">{{ selectedReceiver.name }}</div>
               <div class="caption">Chat with {{ selectedReceiver.name }}</div>
             </div>
-            <router-link class="d-flex justify-end" to="/dashboard" style="text-decoration: none;">
+            <!-- <router-link class="d-flex justify-end" to="/dashboard" style="text-decoration: none;">
               <v-btn color="primary">Back</v-btn>
-            </router-link>
+            </router-link> -->
           </v-card-title>
 
           <v-card-subtitle>
@@ -50,8 +50,11 @@
                   <v-list-item v-for="message in messages" :key="message.id">
                     <v-list-item-content>
                       <v-list-item-title>
-                        <span>{{ message.content }}</span>
+                        <v-card class="pa-3 mb-3"> <h4>{{ message.content }}</h4></v-card>
                       </v-list-item-title>
+                      <span class="mx-5">{{ message.timestamp }}</span>
+                      <span class="mx-5">sent to: {{ message.receiver }}</span>
+                      <span class="mx-5">Ensure that your secrets are safe with us.</span>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
@@ -72,22 +75,7 @@
         </v-card>
 
         <!-- Reply messages -->
-        <v-card v-if="replies && replies.length > 0" class="pa-3 mt-3" elevation="2">
-          <v-card-title>
-            <div class="headline">Replies</div>
-          </v-card-title>
-          <v-scroll-y class="reply-list">
-            <v-list>
-              <v-list-item v-for="reply in replies" :key="reply.id">
-                <v-list-item-content>
-                  <v-list-item-title>
-                    <span>{{ reply.content }}</span>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-scroll-y>
-        </v-card>
+     
 
         <v-card v-else class="pa-3 mt-3" elevation="2">
           <v-card-title>
@@ -97,10 +85,10 @@
 
         <v-card v-else class="pa-3" elevation="2">
           <v-card-title>
-            <div class="headline">Select a conversation</div>
+            <div class="headline">Select a user to whom you want to whisper.</div>
           </v-card-title>
           <v-card-subtitle>
-            <div class="caption">Click on a user from the Inbox to start a chat.</div>
+            <div class="caption">Click on a user from the Inbox to start a chat.Ensure that your secrets are safe with us.</div>
           </v-card-subtitle>
         </v-card>
       </v-col>
@@ -194,7 +182,7 @@ export default {
       try {
         const receiverId = this.selectedReceiver.id;
 
-        const response = await axios.get('http://127.0.0.1:8000/chat/api/messages-by-sender/', {
+        const response = await axios.get('http://127.0.0.1:8000/chat/api/conversation-messages/', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
