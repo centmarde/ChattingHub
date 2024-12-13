@@ -102,14 +102,13 @@ class MessageViewSet(viewsets.ModelViewSet):
         # Retrieve messages for the given sender ID
         messages = Message.objects.filter(sender__id=sender_id)
 
-        # Decrypt the message content
+        # Prepare response with decrypted content already handled by middleware
         decrypted_messages = []
         for message in messages:
-            decrypted_content = self.cipher.decrypt(message.content.encode()).decode()
             decrypted_message = {
                 'sender': message.sender.name,
                 'receiver': message.receiver.name,
-                'content': decrypted_content,
+                'content': message.content,  # The content is already decrypted by middleware
                 'timestamp': message.timestamp,
             }
             decrypted_messages.append(decrypted_message)

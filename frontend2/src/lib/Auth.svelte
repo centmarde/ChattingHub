@@ -4,67 +4,79 @@
   import axios from "axios";
   import { accessToken, userId, isAuthenticated } from "../stores/authStore";
 
-  
   let email = "";
   let password = "";
+  let confirmPassword = "";
+  let error = "";
 
   const handleLoginSubmit = async () => {
     try {
-      // Authenticate the user with the login credentials
       const response = await axios.post("http://localhost:8000/api/login/", {
-        email: email,
-        password: password,
+        email,
+        password,
       });
 
-      const token = response.data.access; // Get the access token
-      console.log("Access Token:", token);
-
-      // Update the store with the new token and set isAuthenticated to true
+      const token = response.data.access;
       accessToken.set(token);
-      userId.set(null);  // Reset userId in case there's no stored user data
-      isAuthenticated.set(true); // Set the user as authenticated
+      userId.set(null);
+      isAuthenticated.set(true);
 
-      // Fetch the user details from /api/me/ using the access token
       const userResponse = await axios.get("http://localhost:8000/api/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const id = userResponse.data.id; // Assuming the response contains an 'id' field
-      console.log("User ID:", id);
-
-      // Update the store with the new user ID
+      const id = userResponse.data.id;
       userId.set(id);
 
-      // Save the token and user data to localStorage for persistence
       localStorage.setItem("accessToken", token);
       localStorage.setItem("userId", id);
 
-     
-
       navigate('/dashboard');
-      return true; // Successful login
+      return true;
     } catch (error) {
+      alert("Login failed. Please check your credentials.");
       console.error("Login failed:", error);
-      
-      // Reset the store values in case of failure
       accessToken.set(null);
       userId.set(null);
-      isAuthenticated.set(false); // Set authentication state to false
+      isAuthenticated.set(false);
 
-      // Remove invalid token and user ID from localStorage
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userId");
 
-     
-
-      return false; // Failed login
+    
+      return false;
     }
   };
 
-  const handleRegisterSubmit = () => {
-    alert("Registration form submitted!");
+  const handleRegisterSubmit = async () => {
+    if (password !== confirmPassword) {
+      error = "Passwords do not match";
+      return false;
+    }
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/signup/", {
+        email,
+        password1: password,
+        password2: confirmPassword,
+      });
+
+      if (response.data.message === "success") {
+       alert("Registration successful! Please Login to continue.");
+       
+       window.location.href = "/";
+        return true;
+      } else {
+        error = response.data.errors || "An unknown error occurred.";
+        return false;
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+  
+      return false;
+    }
   };
 </script>
 
@@ -79,9 +91,8 @@
   }
 </style>
 
-<br><br><br>
 <div class="form-container">
-  <h2 class="text-center">Login</h2>
+  <h2 class="text-center">Decrypter</h2>
   <form on:submit|preventDefault={handleLoginSubmit}>
     <div class="mb-3">
       <label for="email" class="form-label">Email</label>
@@ -107,7 +118,7 @@
     </div>
     <div class="d-flex justify-content-center">
       <Button class="w-50" type="submit" variant="raised">
-        <Icon class="material-icons">favorite</Icon>
+        <Icon class="material-icons">login</Icon>
         <Label>Login</Label>
       </Button>
     </div>
@@ -133,6 +144,7 @@
               type="email"
               class="form-control"
               id="registerEmail"
+              bind:value={email}
               required
               placeholder="Enter your email"
             />
@@ -143,14 +155,26 @@
               type="password"
               class="form-control"
               id="registerPassword"
+              bind:value={password}
               required
               placeholder="Enter your password"
             />
           </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="confirmPassword"
+              bind:value={confirmPassword}
+              required
+              placeholder="Confirm your password"
+            />
+          </div>
           <div class="d-flex justify-content-center">
             <Button class="w-50" type="submit" variant="raised">
-              <Icon class="material-icons">favorite</Icon>
-              <Label>Login</Label>
+              <Icon class="material-icons">person_add</Icon>
+              <Label>Register</Label>
             </Button>
           </div>
         </form>

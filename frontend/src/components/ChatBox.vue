@@ -188,6 +188,7 @@ export default {
           },
           params: {
             sender_id: receiverId, // Get replies from the selected user
+            receiver_id: this.user.id,
           },
         });
 
@@ -203,7 +204,7 @@ export default {
           this.fetchMessages();
           this.fetchReplies();
         }
-      }, 5000);
+      }, 2000);
     },
     async sendMessage() {
       if (!this.selectedReceiver || !this.newMessage) return;
