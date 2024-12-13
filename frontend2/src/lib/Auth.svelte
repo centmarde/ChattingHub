@@ -3,7 +3,7 @@
   import { navigate } from 'svelte-routing';
   import axios from "axios";
   import { accessToken, userId, isAuthenticated } from "../stores/authStore";
-  import { toast } from '@zerodevx/svelte-toast'; // Import SvelteToast and toast
+
   
   let email = "";
   let password = "";
@@ -41,15 +41,7 @@
       localStorage.setItem("accessToken", token);
       localStorage.setItem("userId", id);
 
-      // Show success toast
-      toast.push("Login successful!", {
-        duration: 3000,
-        theme: {
-          '--toastColor': 'mintcream',
-          '--toastBackground': 'rgba(72,187,120,0.9)',
-          '--toastBarBackground': '#2F855A'
-        }
-      });
+     
 
       navigate('/dashboard');
       return true; // Successful login
@@ -65,15 +57,7 @@
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userId");
 
-      // Show error toast
-      toast.push("Login failed. Please try again.", {
-        duration: 3000,
-        theme: {
-          '--toastColor': 'red',
-          '--toastBackground': 'rgba(72,187,120,0.9)',
-          '--toastBarBackground': '#2F855A'
-        }
-      });
+     
 
       return false; // Failed login
     }

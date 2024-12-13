@@ -1,6 +1,6 @@
 import { isAuthenticated } from '../stores/authStore';  // Import the auth store
 import { navigate } from 'svelte-routing';
-
+import { get } from 'svelte/store';
 type RouteMap = {
   [key: string]: any;  // Use 'any' or 'SvelteComponent' to support Svelte components
 };
@@ -13,27 +13,53 @@ export const routes: RouteMap = {
   '/chat': () => import('../router/chat/+Chat.svelte'),
 };
 
-// Router logic to handle redirection based on authentication state
 export function handleRouteChange(path: string) {
-  const isLoggedIn = isAuthenticated;  // Access the auth store's value reactively
-  console.log("isLoggedIn:", isLoggedIn);
-  if (path === '/' && isLoggedIn) {
-    // Redirect authenticated users away from the login page
-    navigate('/dashboard');
-  } else if (path === '/dashboard' && !isLoggedIn) {
-    // Redirect unauthenticated users away from the dashboard
-    navigate('/');
-  } else {
-    // Otherwise, render the component for the given path
-    const route = routes[path];
-    if (route) {
-      route().then(component => {
-        // Render the component (depending on your setup)
-      });
-    } else {
-      routes['*']().then(component => {
-        // Render the NotFound component if no route is matched
-      });
-    }
+  const loggedIn = get(isAuthenticated); // Retrieve the current authentication state
+
+  console.log("Route change detected:", path);
+  console.log("User authenticated:", loggedIn);
+
+  // Protect routes using a switch case for scalability
+  switch (path) {
+    case '/chat':
+      if (!loggedIn) {
+        console.log("Unauthorized access to /chat. Redirecting to /");
+        navigate('/');
+        return;
+      }
+      break;
+
+    case '/dashboard':
+      if (!loggedIn) {
+        console.log("Unauthorized access to /dashboard. Redirecting to /");
+        navigate('/');
+        return;
+      }
+      break;
+
+    case '/':
+      if (loggedIn) {
+        console.log("Authenticated user attempting to access /. Redirecting to /chat");
+        navigate('/chat');
+        return;
+      }
+      break;
+
+    default:
+      break;
   }
+
+  // Handle other routes
+ /*  const route = routes[path];
+  if (route) {
+    route().then(component => {
+      console.log("Rendering component for:", path);
+      // Add logic to render the component (depends on your setup)
+    });
+  } else {
+    routes['*']().then(component => {
+      console.log("Rendering NotFound component.");
+      // Add logic to render a 404 component
+    });
+  } */
 }
