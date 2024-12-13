@@ -4,7 +4,7 @@
   </script>
   
   <main>
-    <TopNav />
+    <!-- <TopNav /> -->
   
     <div class="container">
       <Counter />
