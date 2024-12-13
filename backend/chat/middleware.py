@@ -12,7 +12,7 @@ class MessageEncryptionMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         # Check if the request content type is JSON
-        if request.content_type == 'application/json':
+        if request.content_type == 'application/json' and request.body:
             try:
                 # Decode the incoming request body into JSON
                 request_data = json.loads(request.body.decode('utf-8'))
@@ -35,13 +35,17 @@ class MessageEncryptionMiddleware(MiddlewareMixin):
         # Check if the response has the 'message' field and is JSON
         if hasattr(response, 'data') and isinstance(response.data, dict) and 'message' in response.data:
             message_content = response.data['message']
-            print(f"Original message before encryption: {message_content}")  # Debugging
+            print(f"Original message before decryption: {message_content}")  # Debugging
             
-            # Encrypt the message content before returning it
-            encrypted_content = self.cipher.encrypt(message_content.encode('utf-8')).decode('utf-8')
-            print(f"Encrypted message in response: {encrypted_content}")  # Debugging
-            
-            # Set the encrypted message back in the response
-            response.data['message'] = encrypted_content
+            # Encrypt the message content before returning it (for response encryption)
+            try:
+                encrypted_content = self.cipher.encrypt(message_content.encode('utf-8')).decode('utf-8')
+                print(f"Encrypted message in response: {encrypted_content}")  # Debugging
+                
+                # Set the encrypted message back in the response
+                response.data['message'] = encrypted_content
+            except Exception as e:
+                print(f"Error encrypting message in response: {e}")
+                response.data['message'] = "Error encrypting message"
         
         return response
