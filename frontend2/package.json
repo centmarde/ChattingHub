@@ -12,8 +12,10 @@
   "devDependencies": {
     "@mdi/js": "^7.4.47",
     "@smui/button": "^8.0.0-beta.1",
+    "@smui/card": "^8.0.0-beta.1",
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tsconfig/svelte": "^5.0.4",
+    "@zerodevx/svelte-toast": "^0.9.6",
     "svelte": "^5.2.7",
     "svelte-check": "^4.1.0",
     "tslib": "^2.8.1",
@@ -21,6 +23,7 @@
     "vite": "^6.0.1"
   },
   "dependencies": {
+    "@sveltejs/kit": "^2.11.1",
     "axios": "^1.7.9",
     "svelte-material-ui": "^8.0.0-beta.1",
     "svelte-routing": "^2.13.0",
