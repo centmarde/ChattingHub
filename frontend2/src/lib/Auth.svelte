@@ -1,7 +1,9 @@
 <script>
-   import Button, { Label, Icon } from '@smui/button';
+  import Button, { Label, Icon } from '@smui/button';
+  import { navigate } from 'svelte-routing';
   import axios from "axios";
-  import { accessToken, userId } from "../stores/authStore";
+  import { accessToken, userId, isAuthenticated } from "../stores/authStore";
+  import { toast } from '@zerodevx/svelte-toast'; // Import SvelteToast and toast
   
   let email = "";
   let password = "";
@@ -9,7 +11,7 @@
   const handleLoginSubmit = async () => {
     try {
       // Authenticate the user with the login credentials
-      const response = await axios.post("/api/login/", {
+      const response = await axios.post("http://localhost:8000/api/login/", {
         email: email,
         password: password,
       });
@@ -17,11 +19,10 @@
       const token = response.data.access; // Get the access token
       console.log("Access Token:", token);
 
-      // Update the store with the new token
+      // Update the store with the new token and set isAuthenticated to true
       accessToken.set(token);
-
-      // Save the token to localStorage for persistence
-      localStorage.setItem("accessToken", token);
+      userId.set(null);  // Reset userId in case there's no stored user data
+      isAuthenticated.set(true); // Set the user as authenticated
 
       // Fetch the user details from /api/me/ using the access token
       const userResponse = await axios.get("http://localhost:8000/api/me/", {
@@ -36,9 +37,21 @@
       // Update the store with the new user ID
       userId.set(id);
 
-      // Save user data to localStorage
+      // Save the token and user data to localStorage for persistence
+      localStorage.setItem("accessToken", token);
       localStorage.setItem("userId", id);
 
+      // Show success toast
+      toast.push("Login successful!", {
+        duration: 3000,
+        theme: {
+          '--toastColor': 'mintcream',
+          '--toastBackground': 'rgba(72,187,120,0.9)',
+          '--toastBarBackground': '#2F855A'
+        }
+      });
+
+      navigate('/dashboard');
       return true; // Successful login
     } catch (error) {
       console.error("Login failed:", error);
@@ -46,10 +59,21 @@
       // Reset the store values in case of failure
       accessToken.set(null);
       userId.set(null);
+      isAuthenticated.set(false); // Set authentication state to false
 
       // Remove invalid token and user ID from localStorage
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userId");
+
+      // Show error toast
+      toast.push("Login failed. Please try again.", {
+        duration: 3000,
+        theme: {
+          '--toastColor': 'red',
+          '--toastBackground': 'rgba(72,187,120,0.9)',
+          '--toastBarBackground': '#2F855A'
+        }
+      });
 
       return false; // Failed login
     }
@@ -70,9 +94,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 </style>
-<br> <br> <br>
+
+<br><br><br>
 <div class="form-container">
- 
   <h2 class="text-center">Login</h2>
   <form on:submit|preventDefault={handleLoginSubmit}>
     <div class="mb-3">
@@ -97,12 +121,12 @@
         placeholder="Enter your password"
       />
     </div>
-    <div class="d-flex justify-content-center"><Button class="w-50" type="submit" variant="raised">
-      <Icon class="material-icons">favorite</Icon>
-      <Label>Login</Label>
-    </Button></div>
-    
-   
+    <div class="d-flex justify-content-center">
+      <Button class="w-50" type="submit" variant="raised">
+        <Icon class="material-icons">favorite</Icon>
+        <Label>Login</Label>
+      </Button>
+    </div>
   </form>
   <div class="text-center mt-3">
     <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
@@ -139,10 +163,12 @@
               placeholder="Enter your password"
             />
           </div>
-          <div class="d-flex justify-content-center"><Button class="w-50" type="submit" variant="raised">
-            <Icon class="material-icons">favorite</Icon>
-            <Label>Login</Label>
-          </Button></div>
+          <div class="d-flex justify-content-center">
+            <Button class="w-50" type="submit" variant="raised">
+              <Icon class="material-icons">favorite</Icon>
+              <Label>Login</Label>
+            </Button>
+          </div>
         </form>
       </div>
     </div>
