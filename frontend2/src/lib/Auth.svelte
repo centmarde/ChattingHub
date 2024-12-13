@@ -4,6 +4,7 @@
   import axios from "axios";
   import { accessToken, userId, isAuthenticated } from "../stores/authStore";
 
+  let name = "";
   let email = "";
   let password = "";
   let confirmPassword = "";
@@ -33,7 +34,7 @@
       localStorage.setItem("accessToken", token);
       localStorage.setItem("userId", id);
 
-      navigate('/dashboard');
+      navigate('/chat');
       return true;
     } catch (error) {
       alert("Login failed. Please check your credentials.");
@@ -45,7 +46,6 @@
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userId");
 
-    
       return false;
     }
   };
@@ -57,15 +57,15 @@
     }
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/signup/", {
+      const response = await axios.post("http://localhost:8000/api/signup/", {
+        name,
         email,
         password1: password,
         password2: confirmPassword,
       });
 
       if (response.data.message === "success") {
-       alert("Registration successful! Please Login to continue.");
-       
+        alert("Registration successful! Please Login to continue.");
        window.location.href = "/";
         return true;
       } else {
@@ -74,7 +74,7 @@
       }
     } catch (error) {
       console.error("Registration error:", error);
-  
+      error = "An error occurred during registration.";
       return false;
     }
   };
@@ -91,6 +91,7 @@
   }
 </style>
 
+<br> <br> <br> <br>
 <div class="form-container">
   <h2 class="text-center">Decrypter</h2>
   <form on:submit|preventDefault={handleLoginSubmit}>
@@ -139,6 +140,17 @@
       <div class="modal-body">
         <form on:submit|preventDefault={handleRegisterSubmit}>
           <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              bind:value={name}
+              required
+              placeholder="Enter your name"
+            />
+          </div>
+          <div class="mb-3">
             <label for="registerEmail" class="form-label">Email</label>
             <input
               type="email"
@@ -177,6 +189,9 @@
               <Label>Register</Label>
             </Button>
           </div>
+          {#if error}
+            <div class="text-danger mt-2">{error}</div>
+          {/if}
         </form>
       </div>
     </div>
