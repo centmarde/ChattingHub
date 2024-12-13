@@ -26,7 +26,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         encrypted_content = self.cipher.encrypt(message_content.encode()).decode()
 
         # Save the encrypted message to the database
-        serializer.save(sender=sender, receiver=receiver, content=encrypted_content)
+        serializer.save(sender=sender, receiver=receiver, content=message_content)
 
     @action(detail=False, methods=['get'], url_path='messages')
     def get_messages_by_sender_receiver(self, request):
@@ -80,8 +80,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         message_data = []
         for message in messages:
             message_data.append({
-                'sender': message.sender.username,
-                'receiver': message.receiver.username,
+                'sender': message.sender.name,
+                'receiver': message.receiver.name,
                 'content': message.content,  # No decryption, just raw content
                 'timestamp': message.timestamp,
             })

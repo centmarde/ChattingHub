@@ -162,12 +162,13 @@ export default {
       try {
         const receiverId = this.selectedReceiver.id;
 
-        const response = await axios.get('http://127.0.0.1:8000/chat/api/messages-by-receiver/', {
+        const response = await axios.get('http://127.0.0.1:8000/chat/api/conversation-messages/', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
           params: {
             receiver_id: receiverId,
+            sender_id: this.user.id,
           },
         });
 
@@ -188,6 +189,7 @@ export default {
           },
           params: {
             sender_id: receiverId, // Get replies from the selected user
+            receiver_id: this.user.id,
           },
         });
 
@@ -203,7 +205,7 @@ export default {
           this.fetchMessages();
           this.fetchReplies();
         }
-      }, 5000);
+      }, 2000);
     },
     async sendMessage() {
       if (!this.selectedReceiver || !this.newMessage) return;

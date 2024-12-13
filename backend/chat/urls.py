@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/messages/', MessageViewSet.as_view({'get': 'get_messages_by_sender_receiver'}), name='messages_by_sender_receiver'),
     path('api/messages-by-sender/', MessageViewSet.as_view({'get': 'get_messages_by_sender'}), name='messages_by_sender'),
     path('api/messages-by-receiver/', MessageViewSet.as_view({'get': 'get_messages_by_receiver'}), name='messages_by_receiver'),
+     path('api/conversation-messages/', MessageViewSet.as_view({'get': 'get_conversation_messages'}), name='conversation_messages'),
 ]
