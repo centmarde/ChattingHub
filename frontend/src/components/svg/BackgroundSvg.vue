@@ -4,7 +4,7 @@
     version="1.1"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:svgjs="http://svgjs.dev/svgjs"
-    width="1440"
+    width="1600"
     height="700"
     preserveAspectRatio="none"
     viewBox="0 0 1440 700"
