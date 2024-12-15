@@ -3,7 +3,11 @@
     <v-navigation-drawer app expand-on-hover rail color="#0e253f" elevation="5">
       <!-- Chat Hub -->
       <v-list class="mb-2 mt-1">
-        <v-list-item :prepend-avatar="chatAvatar" title="ChatHub"></v-list-item>
+        <v-list-item :prepend-avatar="chatAvatar"
+          ><strong class="text-h5 font-weight-black"
+            >Whisperer</strong
+          ></v-list-item
+        >
       </v-list>
 
       <v-list density="compact" nav>
@@ -28,7 +32,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="#0e253f">
+    <v-app-bar app color="#0e253f" class="px-5">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
 
@@ -40,30 +44,68 @@
       </v-btn>
 
       <!-- User Settings -->
-      <v-menu v-model="menu" :close-on-content-click="false" offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            rounded="xl"
-            size="large"
-            variant="tonal"
-            v-bind="attrs"
-            v-on="on"
-            @click="toggleMenu"
-          >
+      <v-menu transition="slide-y-transition">
+        <template v-slot:activator="{ props }">
+          <v-btn rounded="xl" size="large" variant="tonal" v-bind="props">
             <v-avatar size="25" class="mr-2">
               <v-img src="@/assets/images/avatars/avatar-1.png"></v-img>
             </v-avatar>
-            <v-icon>mdi-cog</v-icon>
+            <v-icon color="white">mdi-cog</v-icon>
           </v-btn>
         </template>
-        <v-list>
-          <v-list-item @click="logout">
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="profile">
-            <v-list-item-title>Profile</v-list-item-title>
-          </v-list-item>
-        </v-list>
+
+        <v-sheet class="pa-0 mt-2 me-1 menu-card" color="grey-darken-3">
+          <div>
+            <v-btn
+              class="justify-start"
+              rounded="0"
+              variant="text"
+              size="large"
+              block
+              @click="handleProfileClick"
+              style="text-transform: none"
+            >
+              <v-row align="center" no-gutters>
+                <v-col cols="auto">
+                  <v-icon class="me-3" left>mdi-account</v-icon>
+                </v-col>
+                <v-col> Profile </v-col>
+              </v-row>
+            </v-btn>
+            <v-btn
+              class="justify-start"
+              rounded="0"
+              variant="text"
+              size="large"
+              block
+              @click="handleSettingsClick"
+              style="text-transform: none"
+            >
+              <v-row align="center" no-gutters>
+                <v-col cols="auto">
+                  <v-icon class="me-3" left>mdi-cog</v-icon>
+                </v-col>
+                <v-col> Settings </v-col>
+              </v-row>
+            </v-btn>
+            <v-btn
+              class="justify-start"
+              rounded="0"
+              variant="text"
+              size="large"
+              block
+              @click="handleLogoutClick"
+              style="text-transform: none"
+            >
+              <v-row align="center" no-gutters>
+                <v-col cols="auto">
+                  <v-icon class="me-3" left>mdi-logout</v-icon>
+                </v-col>
+                <v-col @click="logout"> Logout </v-col>
+              </v-row>
+            </v-btn>
+          </div>
+        </v-sheet>
       </v-menu>
     </v-app-bar>
 
@@ -97,7 +139,6 @@ const users = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const activeTab = ref(localStorage.getItem("activeTab") || "dashboard"); // Retrieve activeTab from local storage
-const menu = ref(false); // State for the user settings menu
 
 const fetchUsers = async () => {
   try {
@@ -131,10 +172,6 @@ const logout = () => {
 const profile = () => {
   // Handle profile logic here
   console.log("Profile clicked");
-};
-
-const toggleMenu = () => {
-  menu.value = !menu.value;
 };
 
 onMounted(fetchUsers);

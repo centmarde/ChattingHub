@@ -5,18 +5,18 @@
     import { onMount } from 'svelte';
     import axios from 'axios';
     import { userId } from '../../stores/authStore';
+    import avatarPlaceholder from '../../assets/images/nigga.png';
+    import chatAvatar from '../../assets/images/nigga.png';
   
     // Define the User type
     interface User {
       id: number;
       name: string;
-      avatar: string;
     }
   
     let user: User = {
       id: 0,
       name: '',
-      avatar: ''
     };
     let users: User[] = [];
     let selectedReceiver: User | null = null;
@@ -115,7 +115,7 @@
   
     .caption {
       font-size: 0.9em;
-      color: grey;
+      color: #b5b5b5;
     }
   
     .user-card {
@@ -123,7 +123,7 @@
       border-radius: 10px;
       margin-bottom: 10px;
       padding: 15px;
-      display: flex;
+      display: flex;  
       align-items: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       cursor: pointer;
@@ -131,7 +131,12 @@
     }
   
     .user-card:hover {
-      background-color: #e1f5fe;
+      background-color: #ddd2ed;
+    }
+
+    .user-card.active {
+     background-color: #6200ee; /* Change this to your desired active color */
+     color: #ffffff;
     }
   
     .user-card img {
@@ -150,7 +155,7 @@
     }
   
     .chat-header {
-      background-color: #1976d2;
+      background-color: #6200ee;
       color: white;
       padding: 15px;
       border-radius: 10px 10px 0 0;
@@ -169,7 +174,7 @@
       flex: 1;
       padding: 20px;
       overflow-y: auto;
-      background-color: #f1f1f1;
+      background-color: #ddd2ed;
     }
   
     .message {
@@ -182,7 +187,7 @@
   
     .message .sender {
       font-weight: bold;
-      color: #1976d2;
+      color: #6200ee;
     }
   
     .message .content {
@@ -216,12 +221,12 @@
       font-size: 1.2em;
       color: #555;
     }
-  
+
   </style>
   
   <TopNav />
   <AuthGuard>
-    <div class="container">
+    <div class="container ">
       <div class="row">
         <!-- Inbox (left sidebar) -->
         <div class="col-md-4">
@@ -233,8 +238,10 @@
               {:else if users.length > 0}
                 <div>
                   {#each users as user (user.id)}
-                    <div on:click={() => selectReceiver(user)} class="user-card">
-                      <img src={user.avatar} alt={user.name} />
+                    <div 
+                      on:click={() => selectReceiver(user)} 
+                      class="user-card {selectedReceiver && selectedReceiver.id === user.id ? 'active' : ''}">
+                      <img src={avatarPlaceholder} alt={user.name} />
                       <span>{user.name}</span>
                     </div>
                   {/each}
@@ -251,10 +258,10 @@
           {#if selectedReceiver}
             <div class="chat-box">
               <div class="chat-header">
-                <img src={selectedReceiver.avatar} alt={selectedReceiver.name} />
+                <img src={chatAvatar} alt={selectedReceiver.name} />
                 <div>
                   <h4>{selectedReceiver.name}</h4>
-                  <p class="caption">Chat with {selectedReceiver.name}</p>
+                  <p class="caption ">Chat with {selectedReceiver.name}</p>
                 </div>
               </div>
               <div class="chat-messages">

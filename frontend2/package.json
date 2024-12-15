@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
+    "prepare": "npm run smui-theme-light && npm run smui-theme-dark",
+    "smui-theme-light": "smui-theme compile build/smui.css -i src/theme",
+    "smui-theme-dark": "smui-theme compile build/smui-dark.css -i src/theme/dark"
   },
   "devDependencies": {
     "@mdi/js": "^7.4.47",
@@ -16,6 +19,9 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tsconfig/svelte": "^5.0.4",
     "@zerodevx/svelte-toast": "^0.9.6",
+    "prettier": "^3.4.2",
+    "prettier-plugin-svelte": "^3.3.2",
+    "smui-theme": "^8.0.0-beta.2",
     "svelte": "^5.2.7",
     "svelte-check": "^4.1.0",
     "tslib": "^2.8.1",
