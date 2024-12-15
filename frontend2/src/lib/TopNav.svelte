@@ -1,4 +1,4 @@
-<TopAppBar bind:this={topAppBar} variant="short" collapsed>
+<TopAppBar bind:this={topAppBar} variant="short" collapsed >
   <Row>
     <Section>
       <div  on:click={() => console.log('Menu clicked')}>
@@ -65,4 +65,5 @@
   :global(.material-icons) {
     pointer-events: auto;
   }
+
 </style>
