@@ -9,7 +9,11 @@
           </v-card-title>
           <v-list>
             <v-list-item-group v-if="filteredUsers.length > 0">
-              <v-list-item v-for="user in filteredUsers" :key="user.id" @click="selectReceiver(user)">
+              <v-list-item
+                v-for="user in filteredUsers"
+                :key="user.id"
+                @click="selectReceiver(user)"
+              >
                 <v-list-item-avatar>
                   <v-img :src="user.avatar" />
                 </v-list-item-avatar>
@@ -20,7 +24,9 @@
             </v-list-item-group>
             <v-list-item v-else>
               <v-list-item-content>
-                <v-list-item-title>No conversations available...</v-list-item-title>
+                <v-list-item-title
+                  >No conversations available...</v-list-item-title
+                >
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -50,11 +56,15 @@
                   <v-list-item v-for="message in messages" :key="message.id">
                     <v-list-item-content>
                       <v-list-item-title>
-                        <v-card class="pa-3 mb-3"> <h4>{{ message.content }}</h4></v-card>
+                        <v-card class="pa-3 mb-3">
+                          <h4>{{ message.content }}</h4></v-card
+                        >
                       </v-list-item-title>
                       <span class="mx-5">{{ message.timestamp }}</span>
                       <span class="mx-5">sent to: {{ message.receiver }}</span>
-                      <span class="mx-5">Ensure that your secrets are safe with us.</span>
+                      <span class="mx-5"
+                        >Ensure that your secrets are safe with us.</span
+                      >
                     </v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
@@ -69,13 +79,20 @@
 
           <!-- Message Input -->
           <v-card-actions>
-            <v-textarea v-model="newMessage" label="Type your message" rows="2" outlined dense />
-            <v-btn @click="sendMessage" :disabled="!newMessage" color="primary">Send</v-btn>
+            <v-textarea
+              v-model="newMessage"
+              label="Type your message"
+              rows="2"
+              outlined
+              dense
+            />
+            <v-btn @click="sendMessage" :disabled="!newMessage" color="primary"
+              >Send</v-btn
+            >
           </v-card-actions>
         </v-card>
 
         <!-- Reply messages -->
-     
 
         <v-card v-else class="pa-3 mt-3" elevation="2">
           <v-card-title>
@@ -85,10 +102,15 @@
 
         <v-card v-else class="pa-3" elevation="2">
           <v-card-title>
-            <div class="headline">Select a user to whom you want to whisper.</div>
+            <div class="headline">
+              Select a user to whom you want to whisper.
+            </div>
           </v-card-title>
           <v-card-subtitle>
-            <div class="caption">Click on a user from the Inbox to start a chat.Ensure that your secrets are safe with us.</div>
+            <div class="caption">
+              Click on a user from the Inbox to start a chat.Ensure that your
+              secrets are safe with us.
+            </div>
           </v-card-subtitle>
         </v-card>
       </v-col>
@@ -97,19 +119,19 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
       user: {
         id: null,
-        name: '',
-        avatar: '',
+        name: "",
+        avatar: "",
       },
       users: [],
       selectedReceiver: null,
-      newMessage: '',
+      newMessage: "",
       messages: [], // Default value is an empty array to avoid undefined errors
       replies: [], // Default value is an empty array to avoid undefined errors
     };
@@ -121,35 +143,38 @@ export default {
   },
   computed: {
     filteredUsers() {
-      return this.users.filter(user => user.id !== this.user.id);
-    }
+      return this.users.filter((user) => user.id !== this.user.id);
+    },
   },
   methods: {
     async fetchUserData() {
       try {
-        const userResponse = await axios.get('http://localhost:8000/api/me/', {
+        const userResponse = await axios.get("http://localhost:8000/api/me/", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
         this.user = userResponse.data;
         this.fetchMessages();
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       }
     },
     async fetchUsers() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/users/', {
+        const response = await axios.get("http://127.0.0.1:8000/api/users/", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
-        if (response.data.status === 'success' && Array.isArray(response.data.data.users)) {
+        if (
+          response.data.status === "success" &&
+          Array.isArray(response.data.data.users)
+        ) {
           this.users = response.data.data.users;
         }
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error("Error fetching users:", error);
       }
     },
     selectReceiver(user) {
@@ -162,20 +187,23 @@ export default {
       try {
         const receiverId = this.selectedReceiver.id;
 
-        const response = await axios.get('http://127.0.0.1:8000/chat/api/conversation-messages/', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-          params: {
-            receiver_id: receiverId,
-            sender_id: this.user.id,
-          },
-        });
+        const response = await axios.get(
+          "http://127.0.0.1:8000/chat/api/conversation-messages/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+            params: {
+              receiver_id: receiverId,
+              sender_id: this.user.id,
+            },
+          }
+        );
 
         this.messages = response.data;
         this.fetchReplies(); // Fetch replies from the selected receiver
       } catch (error) {
-        console.error('Error fetching messages:', error);
+        console.error("Error fetching messages:", error);
       }
     },
     async fetchReplies() {
@@ -183,19 +211,22 @@ export default {
       try {
         const receiverId = this.selectedReceiver.id;
 
-        const response = await axios.get('http://127.0.0.1:8000/chat/api/conversation-messages/', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-          params: {
-            sender_id: receiverId, // Get replies from the selected user
-            receiver_id: this.user.id,
-          },
-        });
+        const response = await axios.get(
+          "http://127.0.0.1:8000/chat/api/conversation-messages/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+            params: {
+              sender_id: receiverId, // Get replies from the selected user
+              receiver_id: this.user.id,
+            },
+          }
+        );
 
         this.replies = response.data; // Store the replies
       } catch (error) {
-        console.error('Error fetching replies:', error);
+        console.error("Error fetching replies:", error);
       }
     },
     startMessagePolling() {
@@ -218,12 +249,16 @@ export default {
       };
 
       try {
-        const response = await axios.post('http://localhost:8000/chat/api/messages/', messageData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await axios.post(
+          "http://localhost:8000/chat/api/messages/",
+          messageData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         this.messages.push({
           id: response.data.id,
@@ -231,19 +266,18 @@ export default {
           content: this.newMessage,
         });
 
-        this.newMessage = '';
+        this.newMessage = "";
       } catch (error) {
-        console.error('Error sending message:', error);
+        console.error("Error sending message:", error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
 .headline {
   font-size: 1.5em;
   font-weight: bold;
-  font-family: "monospace";
 }
 
 .caption {
@@ -274,7 +308,8 @@ export default {
 .v-btn {
   align-self: flex-start;
 }
-.message-list, .reply-list {
+.message-list,
+.reply-list {
   max-height: 100px; /* Adjust height as needed */
   overflow-y: auto;
 }

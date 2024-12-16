@@ -100,16 +100,23 @@
 </script>
 
 <style>
+  :global(body) {
+  background-color: #0e253f; /* New background color for the entire page */
+}
+  * {
+  font-family: 'Poppins', sans-serif;
+}
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #081b31;
   }
 
   .headline {
     font-size: 1.5em;
     font-weight: bold;
-    font-family: "monospace";
+
     margin-bottom: 20px;
   }
 
@@ -218,7 +225,7 @@
 
   .intro-text {
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.0rem;
     color: #555;
   }
 

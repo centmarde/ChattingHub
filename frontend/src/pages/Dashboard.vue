@@ -146,6 +146,14 @@ watch(activeTab, (newTab) => {
 </script>
 
 <style scoped>
+* {
+  font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
 .app-container {
   overflow: hidden; /* Prevent unwanted scrollbars */
   height: 100vh; /* Ensure the app container takes full height */

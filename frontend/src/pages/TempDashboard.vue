@@ -114,4 +114,12 @@ export default {
 
 <style scoped>
 /* Add any custom styles here */
+* {
+  font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
 </style>
