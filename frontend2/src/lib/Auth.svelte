@@ -81,14 +81,81 @@
 </script>
 
 <style>
-  .form-container {
+    * {
+  font-family: 'Poppins', sans-serif;
+}
+  :root {
+    --primary-color: #0b064b; /* Green */
+    --secondary-color: #3E8E41; /* Darker Green */
+    --border-color: #e0e0e0; /* Subtle border */
+    --text-color: #333333; /* Dark text */
+    --link-color: #0066cc; /* Blue links */
+    --danger-color: #e63946; /* Red for errors */
+    --background-image: url('./assets/images/f2.jpg'); /* If stored in the public directory */
+    --background-color: #f9f9f9; /* Fallback color */
+    
+  }
+  :global(body) {
+  
+    background-image: var(--background-image);
+    background-color: var(--background-color);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;  
+}
+
+.form-container {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: #d4e6f1; /* Light blue background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color);
+}
+
+
+  h2 {
+    color: var(--primary-color);
+  }
+
+  .form-label {
+    color: var(--text-color);
+  }
+
+  .form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+
+  .text-danger {
+    color: var(--danger-color);
+  }
+
+  .modal-content {
+    background-color: var(--background-color);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+
+  .modal-header {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .modal-title {
+    color: var(--primary-color);
+  }
+
+  .btn-close {
+    color: var(--text-color);
+  }
+  
 </style>
 
 <br> <br> <br> <br>
@@ -118,14 +185,23 @@
       />
     </div>
     <div class="d-flex justify-content-center">
-      <Button class="w-50" type="submit" variant="raised">
-        <Icon class="material-icons">login</Icon>
-        <Label>Login</Label>
-      </Button>
+      <Button 
+  class="w-50" 
+  type="submit" 
+  variant="raised" 
+  style="background-color: #0b064b; color: white;"
+>
+  <Icon class="material-icons">login</Icon>
+  <Label>Login</Label>
+</Button>
+
     </div>
   </form>
   <div class="text-center mt-3">
-    <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+    <p>
+      Don't have an account? 
+      <a href="#registerModal" class="register-link" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
+    </p>
   </div>
 </div>
 
