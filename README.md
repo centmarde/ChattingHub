@@ -171,12 +171,6 @@ frontend2/
 Patent Pending. Unauthorized reproduction, distribution, or use of this material is strictly prohibited.
 2024 © Centmarde Campado, Joren Verdad & Mardz Lidasan (BSIT) - Caraga State University - College of Computing and Information Sciences. All Rights Reserved.
 
-## Support
-
-For any issues or support, please contact the project maintainers.
-
----
-
 ### Backend Documentation
 
 For detailed backend documentation, refer to [README.md](https://github.com/centmarde/ChattingHub/blob/main/backend/README.md).
