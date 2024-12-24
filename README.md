@@ -160,9 +160,17 @@ frontend2/
 
 ## Images
 
+![Screenshot 2024-12-24 222926](https://github.com/user-attachments/assets/340a2d5f-7129-43e4-a001-2b91d58e251d)
+
 ![image](https://github.com/user-attachments/assets/a3e29bf7-fd43-46d2-98c8-c5141872f68e)
 
+![Screenshot 2024-12-24 223218](https://github.com/user-attachments/assets/01665b3f-504c-4700-bc93-235f047e833f)
+
+![Screenshot 2024-12-24 223420](https://github.com/user-attachments/assets/200ecee8-0fcb-49e7-95c0-4484f1f6237d)
+
 ![image](https://github.com/user-attachments/assets/4d4dd5cf-7915-450f-aecf-44fe6f200331)
+
+![Screenshot 2024-12-24 223525](https://github.com/user-attachments/assets/de90c6be-b6f8-4749-8fc3-e2b8306f530c)
 
 ![image](https://github.com/user-attachments/assets/fd97723a-6d91-47f5-aa5c-0c4578663900)
 
