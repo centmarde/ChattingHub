@@ -1,25 +1,46 @@
 <template>
   <v-card class="bg-card" elevation="24">
-    <h1 class="text-center py-8">Chat Whisperer</h1>
+    <h1 class="text-center pb-6">Chat Whisperer</h1>
 
     <v-form ref="form" @submit.prevent="handleLogin">
       <v-text-field
         v-model="email"
-        color="blue-lighten-2"
+        color="blue-darken-1"
+        placeholder="example@gmail.com"
         label="Email"
+        variant="outlined"
         type="email"
         required
-        outlined
       />
       <v-text-field
         v-model="password"
-        color="blue-lighten-2"
+        color="blue-darken-1"
+        placeholder="············"
         label="Password"
-        type="password"
+        variant="outlined"
+        :type="isPasswordVisible ? 'text' : 'password'"
+        :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+        @click:append-inner="isPasswordVisible = !isPasswordVisible"
         required
-        outlined
       />
-      <v-btn type="submit" color="primary" class="mt-1" size="large" block
+
+      <div class="d-flex align-center justify-space-between flex-wrap mb-3">
+        <v-checkbox
+          class="d-flex align-center"
+          color="blue-darken-1"
+          label="Remember me"
+        />
+        <a class="text-blue-lighten-1" href="javascript:void(0)">
+          Forgot Password?
+        </a>
+      </div>
+
+      <v-btn
+        type="submit"
+        color="blue-darken-1"
+        class="mt-1 rounded"
+        size="large"
+        block
         >Login</v-btn
       >
     </v-form>
@@ -40,6 +61,7 @@ export default {
     const email = ref(""); // Bind email input
     const password = ref(""); // Bind password input
     const toast = useToast();
+    const isPasswordVisible = ref(false);
 
     const handleLogin = async () => {
       const success = await authStore.login(email.value, password.value); // Use the store's login action
@@ -54,7 +76,7 @@ export default {
       }
     };
 
-    return { email, password, handleLogin };
+    return { email, password, isPasswordVisible, handleLogin };
   },
 };
 </script>
