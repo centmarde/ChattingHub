@@ -107,8 +107,9 @@ frontend2/
    ```
 
 5. **Run the development server**:
-
+   ensure to migrate tables.
    ```python
+   python manage.py migrate
    python manage.py runserver
    ```
 
