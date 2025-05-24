@@ -98,7 +98,7 @@ frontend2/
 3. **Activate the virtual environment**:
    - On Windows:
      ```python
-     ./venv/Scripts/activate
+     ./venv/Scripts/activate or source venv/Scripts/activate
      ```
 4. **Install the required packages**:
 
